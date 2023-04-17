@@ -45,28 +45,37 @@ public class PatternAwareLetterFreqGuesser implements Guesser {
         return processedMap;
     }
 
-    private Map<Character, Integer> getFreMapThatMatchesPattern(String pattern) {
+    // get the matched words list
+    private List<String> getWordsThatMatchesPattern(String pattern) {
         // construct reg pattern from string eg: "__a_" to "..a."
         String regPattern = pattern.replace('-', '.');
-        // System.out.println("regPattern: " + regPattern);
-        // get the matched words list
+
         List<String> matchedWords = new ArrayList<>();
         for(String word : words) {
             if(word.matches(regPattern)) {
                 matchedWords.add(word);
             }
         }
+        return matchedWords;
+    }
 
+    private Map<Character, Integer> getFrequencyMap(List<String> wordList) {
         Map<Character, Integer> resultMap = new TreeMap<>();
-        for(String str : matchedWords) {
-            int len = str.length();
+        for(String word : wordList) {
+            int len = word.length();
             for(int i=0; i<len; i++) {
-                char cha = str.charAt(i);
+                char cha = word.charAt(i);
                 resultMap.merge(cha, 1, Integer::sum);
             }
         }
-
         return resultMap;
+    }
+
+    private Map<Character, Integer> getFreMapThatMatchesPattern(String pattern) {
+
+        List<String> wordList = getWordsThatMatchesPattern(pattern);
+
+        return getFrequencyMap(wordList);
     }
 
     public static void main(String[] args) {

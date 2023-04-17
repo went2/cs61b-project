@@ -14,12 +14,7 @@ public class NaiveLetterFreqGuesser implements Guesser {
     @Override
     /** Makes a guess which ignores the given pattern. */
     public char getGuess(String pattern, List<Character> guesses) {
-        Map<Character, Integer> patternedMap = getFreMapThatMatchesPattern(pattern);
-        Map<Character, Integer> processedFreqMap = filterSpecificKeys(patternedMap, guesses);
-
-        char result = getMaxValueKey(processedFreqMap);
-        if(result == '?') return getGuess(guesses);
-        return result;
+        return getGuess(guesses);
     }
 
     /** Returns the most common letter in WORDS that has not yet been guessed
@@ -30,33 +25,6 @@ public class NaiveLetterFreqGuesser implements Guesser {
         Map<Character, Integer> processedFreqMap = filterSpecificKeys(freqMap, guesses);
 
         return getMaxValueKey(processedFreqMap);
-    }
-
-    // similar with getFrequencyMap, but based on pattern matched words list
-    private Map<Character, Integer> getFreMapThatMatchesPattern(String pattern) {
-        // construct reg pattern from string eg: "__a_" to "..a."
-        String regPattern = pattern.replace('-', '.');
-        // System.out.println("regPattern: " + regPattern);
-        // get the matched words list
-        List<String> resultWords = new ArrayList<>();
-        for(String word : words) {
-            if(word.matches(regPattern)) {
-                resultWords.add(word);
-            }
-        }
-        Map<Character, Integer> resultMap = new TreeMap<>();
-        for(String str : resultWords) {
-            int len = str.length();
-            for(int i=0; i<len; i++) {
-                char cha = str.charAt(i);
-                resultMap.merge(cha, 1, Integer::sum);
-            }
-        }
-
-        if(resultMap.isEmpty()) {
-            return getFrequencyMap();
-        }
-        return resultMap;
     }
 
     /** Returns a map from a given letter to its frequency across all words.
