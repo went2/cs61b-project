@@ -1,10 +1,8 @@
 package aoa.guessers;
 
 import aoa.utils.FileUtils;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.Set;
+
+import java.util.*;
 
 public class NaiveLetterFreqGuesser implements Guesser {
     private final List<String> words;
@@ -16,7 +14,49 @@ public class NaiveLetterFreqGuesser implements Guesser {
     @Override
     /** Makes a guess which ignores the given pattern. */
     public char getGuess(String pattern, List<Character> guesses) {
-        return getGuess(guesses);
+        Map<Character, Integer> patternedMap = getFreMapThatMatchesPattern(pattern);
+        Map<Character, Integer> processedFreqMap = filterSpecificKeys(patternedMap, guesses);
+
+        char result = getMaxValueKey(processedFreqMap);
+        if(result == '?') return getGuess(guesses);
+        return result;
+    }
+
+    /** Returns the most common letter in WORDS that has not yet been guessed
+     *  (and therefore isn't present in GUESSES). */
+    public char getGuess(List<Character> guesses) {
+        // freqMap is already alphabet sorted
+        Map<Character, Integer> freqMap = this.getFrequencyMap();
+        Map<Character, Integer> processedFreqMap = filterSpecificKeys(freqMap, guesses);
+
+        return getMaxValueKey(processedFreqMap);
+    }
+
+    // similar with getFrequencyMap, but based on pattern matched words list
+    private Map<Character, Integer> getFreMapThatMatchesPattern(String pattern) {
+        // construct reg pattern from string eg: "__a_" to "..a."
+        String regPattern = pattern.replace('-', '.');
+        // System.out.println("regPattern: " + regPattern);
+        // get the matched words list
+        List<String> resultWords = new ArrayList<>();
+        for(String word : words) {
+            if(word.matches(regPattern)) {
+                resultWords.add(word);
+            }
+        }
+        Map<Character, Integer> resultMap = new TreeMap<>();
+        for(String str : resultWords) {
+            int len = str.length();
+            for(int i=0; i<len; i++) {
+                char cha = str.charAt(i);
+                resultMap.merge(cha, 1, Integer::sum);
+            }
+        }
+
+        if(resultMap.isEmpty()) {
+            return getFrequencyMap();
+        }
+        return resultMap;
     }
 
     /** Returns a map from a given letter to its frequency across all words.
@@ -33,33 +73,32 @@ public class NaiveLetterFreqGuesser implements Guesser {
         return resultMap;
     }
 
-    /** Returns the most common letter in WORDS that has not yet been guessed
-     *  (and therefore isn't present in GUESSES). */
-    public char getGuess(List<Character> guesses) {
-        // create map contained entries except keys in guesses list
-        // guesses list is already alphabet sorted
-        Map<Character, Integer> freqMap = this.getFrequencyMap();
-        Map<Character, Integer> processedFreqMap = new TreeMap<>();
-        Set<Character> keys = freqMap.keySet();
-        guesses.forEach(keys::remove);
-        for(char key : keys) {
-            processedFreqMap.put(key, freqMap.get(key));
-        }
 
-        if(processedFreqMap.isEmpty()) {
+    /* exclude the specified keys in a map */
+    private Map<Character, Integer> filterSpecificKeys(Map<Character,Integer> originalMap,List<Character> list) {
+        Map<Character, Integer> processedMap = new TreeMap<>();
+        Set<Character> keys = originalMap.keySet();
+        list.forEach(keys::remove);
+        for(char key : keys) {
+            processedMap.put(key, originalMap.get(key));
+        }
+        return processedMap;
+    }
+
+    private char getMaxValueKey(Map<Character,Integer> freqMap) {
+        if(freqMap.isEmpty()) {
             return '?';
         }
-
-        // find key associated with max value in processedFreqMap
+        // find key associated with max value in a Map
         Map.Entry<Character, Integer> maxEntry = null;
-        for (Map.Entry<Character, Integer> entry : processedFreqMap.entrySet()) {
+        for (Map.Entry<Character, Integer> entry : freqMap.entrySet()) {
             if(maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0 ) {
                 maxEntry = entry;
             }
         }
-
         return maxEntry.getKey();
     }
+
 
     public static void main(String[] args) {
         NaiveLetterFreqGuesser nlfg = new NaiveLetterFreqGuesser("data/example.txt");
@@ -67,6 +106,7 @@ public class NaiveLetterFreqGuesser implements Guesser {
         System.out.println("frequency map: " + nlfg.getFrequencyMap());
 
         List<Character> guesses = List.of('e', 'l');
-        System.out.println("guess: " + nlfg.getGuess(guesses));
+//        System.out.println("guess: " + nlfg.getGuess(guesses));
+        System.out.println("patterned guess :" + nlfg.getGuess("a___", guesses));
     }
 }
