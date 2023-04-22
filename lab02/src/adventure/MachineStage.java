@@ -78,11 +78,12 @@ public class MachineStage implements AdventureStage {
     }
 
     public static int mysteryMax(int a, int b) {
-        int w = (b - a) >> 31;
-        int z = ~(b - a) >> 31;
-
-        int max = b & w | a & z;
-        return max;
+        return Math.max(a, b);
+        // blow is the original implementation of max, which is really mystery.
+        // int w = (b - a) >> 31;
+        // int z = ~(b - a) >> 31;
+        // int max = b & w | a & z;
+        // return max;
     }
 
     public static int mysteryAdd(int a, int b) {
@@ -126,7 +127,8 @@ public class MachineStage implements AdventureStage {
         int i = 0;
         int sum = 0;
         while (i < x.length) {
-            sum = sum + mysteryAdd(sum, x[i]);
+//          sum = sum + mysteryAdd(sum, x[i]);
+            sum += x[i];
             i = i + 1;
         }
         return sum;
@@ -135,7 +137,7 @@ public class MachineStage implements AdventureStage {
     /**
      * Returns the sum of the element-wise max of a and b.
      * For example if a = {1, -10, 3} and b = {0, 20, 5},
-     * the elementwise max is {1, 20, 5}, which sums to 26.
+     * the element-wise max is {1, 20, 5}, which sums to 26.
      */
     public static int sumOfElementwiseMax(int[] a, int[] b) {
         int[] maxes = arrayMax(a, b);
