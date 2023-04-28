@@ -6,6 +6,7 @@ import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Experiments {
@@ -80,18 +81,35 @@ public class Experiments {
         List<Double> times = new ArrayList<>();
         List<Integer> opCounts = new ArrayList<>();
 
-        // TODO: YOUR CODE HERE
 
-        return null;
+        int ops = 10000;
+        for(int N=1000; N<=128000; N*=2) {
+            // construct the SLList of size N
+//            SLList<Integer> list = new SLList<>();
+            List<Integer> list = new LinkedList<>();
+            for(int i=0; i<N; i+=1) {
+                list.add(i);
+//                list.addLast(i);
+            }
+            // start test
+            Ns.add(N);
+            opCounts.add(ops);
+            Stopwatch sw = new Stopwatch();
+            for(int i=0; i<ops; i++) {
+                list.get(list.size() - 1);
+            }
+            times.add(sw.elapsedTime());
+        }
 
+        return new TimingData(Ns, times, opCounts);
     }
 
     public static void main(String[] args) {
-        // TODO: Modify the following line to change the experiment you're running
-//        TimingData td = exampleFibonacciExperiment();
-        TimingData td = timeAListConstruction();
+        // TimingData td = exampleFibonacciExperiment();
+//        TimingData td = timeAListConstruction();
+        TimingData td = timeSLListGetLast();
         // Modify this line to make the chart title make sense
-        String title = "Naive AList addLast";
+        String title = "SLList GetLast Test";
 
         // Convert "times" (in seconds) and "opCounts" to nanoseconds / op
         List<Double> timesUsPerOp = new ArrayList<>();
