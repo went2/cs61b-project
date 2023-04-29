@@ -94,4 +94,57 @@ public class LinkedListDequeTest {
         lld1.addLast(5);
         assertThat(lld1.size()).isEqualTo(5);
     }
+
+    @Test
+    public void testGet() {
+         Deque<Integer> lld1 = new LinkedListDeque<>();
+         assertThat(lld1.get(2)).isEqualTo(null);
+
+         lld1.addFirst(99);
+         lld1.addFirst(88);
+         assertThat(lld1.get(0)).isEqualTo(88);
+         assertThat(lld1.get(2)).isEqualTo(null);
+         assertThat(lld1.get(-2)).isEqualTo(null);
+         assertThat(lld1.get(22234)).isEqualTo(null);
+    }
+
+    @Test
+    public void testGetRecursive() {
+        Deque<Integer> lld1 = new LinkedListDeque<>();
+        assertThat(lld1.getRecursive(2)).isEqualTo(null);
+
+        lld1.addFirst(99);
+        lld1.addFirst(88);
+        lld1.addLast(100);
+
+        assertThat(lld1.getRecursive(0)).isEqualTo(88);
+        assertThat(lld1.getRecursive(1)).isEqualTo(99);
+        assertThat(lld1.getRecursive(2)).isEqualTo(100);
+        assertThat(lld1.getRecursive(3)).isEqualTo(null);
+        assertThat(lld1.getRecursive(-2)).isEqualTo(null);
+        assertThat(lld1.getRecursive(22234)).isEqualTo(null);
+    }
+
+    @Test
+    public void removeFirstAndRemoveLastTest() {
+        Deque<Integer> lld1 = new LinkedListDeque<>();
+        assertThat(lld1.removeFirst()).isEqualTo(null);
+        assertThat(lld1.removeLast()).isEqualTo(null);
+
+        lld1.addLast(0);
+        lld1.addLast(1);
+        assertThat(lld1.removeFirst()).isEqualTo(0);
+        assertThat(lld1.removeFirst()).isEqualTo(1);
+        assertThat(lld1.size()).isEqualTo(0);
+
+        lld1.addLast(0);
+        lld1.addLast(1);
+        lld1.addFirst(-1);
+        lld1.addLast(2);
+        lld1.addFirst(-2); // [-2, -1, 0, 1, 2]
+        lld1.removeFirst();
+        lld1.removeLast();
+        assertThat(lld1.toList()).containsExactly( -1, 0, 1).inOrder();
+
+    }
 }

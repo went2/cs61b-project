@@ -80,32 +80,58 @@ public class LinkedListDeque<T> implements Deque<T> {
 
     @Override
     public T removeFirst() {
-        return null;
+        if(size == 0) {
+            return null;
+        }
+        T item = sentinel.next.item;
+        sentinel.next.next.prev = sentinel;
+        sentinel.next = sentinel.next.next;
+        size -= 1;
+        return item;
     }
 
     @Override
     public T removeLast() {
-        return null;
+        if(size == 0) {
+            return null;
+        }
+        T item = sentinel.prev.item;
+        sentinel.prev.prev.next = sentinel;
+        sentinel.prev = sentinel.prev.prev;
+        size -= 1;
+        return item;
     }
 
     @Override
     public T get(int index) {
-        return null;
+        if (index < 0 || index >= size) {
+            return null;
+        }
+
+        Node<T> p = sentinel;
+        for(int i=0; i<=index; i++) {
+            p = p.next;
+        }
+        return p.item;
     }
 
     @Override
     public T getRecursive(int index) {
-        return null;
+        if(index < 0 || index >= size) {
+            return null;
+        }
+        return getRecursiveHelper(index, sentinel.next);
+    }
+
+    private T getRecursiveHelper(int index, Node<T> p) {
+        if(index == 0) {
+            return p.item;
+        }
+        index -= 1;
+        return getRecursiveHelper(index, p.next);
     }
 
     public static void main(String[] args) {
-        Deque<Integer> lld = new LinkedListDeque<>();
-        lld.addLast(99);
-        lld.addFirst(1);
-        lld.addFirst(3);
-        lld.addFirst(5);
-        lld.addLast(88);
-        lld.addLast(77);
 
     }
 }
