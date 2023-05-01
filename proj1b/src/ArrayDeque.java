@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArrayDeque<T> implements Deque<T>{
@@ -21,13 +22,12 @@ public class ArrayDeque<T> implements Deque<T>{
     @Override
     public void addFirst(T x) {
         // 在 nextFirst 索引处设置新值，更新 nextFirst 与 size
-        // 需处理数组容量扩充与越界
-        if(size == arr.length) {
+        if(size == arr.length) { // 数组扩容，并更新索引
             resizing(size * RFACTOR);
-        } else {
-            arr[nextFirst] = x;
         }
-        // 向左移动索引，越过数组左边界时，会出现-1，可额外加 arr.length 再求模
+
+        arr[nextFirst] = x;
+        // 插入完成后左移一个索引。左移时可能会越过数组左边界，额外加 arr.length 再求模
         nextFirst  = (nextFirst - 1 + arr.length) % arr.length;
         size += 1;
     }
@@ -35,31 +35,38 @@ public class ArrayDeque<T> implements Deque<T>{
     @Override
     public void addLast(T x) {
         // 在 nextLast 索引处设置新值，更新 nextLast 与 size
-        // 需处理数组容量扩充与越界
-        if(size == arr.length) {
+        if(size == arr.length) { // 数组扩容，并更新索引
             resizing(size * RFACTOR);
-        } else {
-            arr[nextLast] = x;
         }
-        // 使用求模处理数组索引越右边界
+        arr[nextLast] = x;
+
+        // 插入完成后右移一个索引，待下一次 addLast
         nextLast = (nextLast + 1) % arr.length;
         size += 1;
     }
 
     private void resizing(int capacity) {
         T[] newArr = (T[]) new Object[capacity];
+        // 不变式：从 nextFirst + 1 位置开始向右读取元素，读取 size 长度，即为按照 Deque 中顺序保存元素
+        // 将读取出来的元素放到新数组的开头
+        // i 原数组索引，用取模处理越界，n 控制读取次数与新数组的索引
         for(int i = (nextFirst + 1) % arr.length, n = 0; n < arr.length; n+=1, i = (i + 1) % arr.length) {
             newArr[n] = arr[i];
         }
-        arr = newArr;
+
         // initiate nextFirst and nextLast
-        nextFirst = arr.length - 1;
-        nextLast = arr.length + 1;
+        nextFirst = newArr.length - 1;
+        nextLast = arr.length;
+        arr = newArr;
     }
 
     @Override
     public List<T> toList() {
-        return null;
+        List<T> returnList = new ArrayList<>();
+        for(int i = (nextFirst + 1) % arr.length, n = 0; n < size; n+=1, i = (i + 1) % arr.length) {
+            returnList.add(arr[i]);
+        }
+        return returnList;
     }
 
     @Override
@@ -95,6 +102,10 @@ public class ArrayDeque<T> implements Deque<T>{
 
     @Override
     public T get(int index) {
-        return null;
+        if(index < 0 || index >= size) {
+            return null;
+        }
+        int targetIdx = (nextFirst + 1 + index) % arr.length;
+        return arr[targetIdx];
     }
 }
