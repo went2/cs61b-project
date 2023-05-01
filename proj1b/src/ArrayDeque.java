@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("LanguageDetectionInspection")
 public class ArrayDeque<T> implements Deque<T>{
     int size;
     private int nextFirst;
@@ -45,12 +46,14 @@ public class ArrayDeque<T> implements Deque<T>{
         size += 1;
     }
 
+    // 数组扩容和缩小的实现一样，将当前所有元素一次放到新数组从头开始处
+    // 只是新数组容量不同
     private void resizing(int capacity) {
         T[] newArr = (T[]) new Object[capacity];
         // 不变式：从 nextFirst + 1 位置开始向右读取元素，读取 size 长度，即为按照 Deque 中顺序保存元素
         // 将读取出来的元素放到新数组的开头
         // i 原数组索引，用取模处理越界，n 控制读取次数与新数组的索引
-        for(int i = (nextFirst + 1) % arr.length, n = 0; n < arr.length; n+=1, i = (i + 1) % arr.length) {
+        for(int i = (nextFirst + 1) % arr.length, n = 0; n < capacity; n+=1, i = (i + 1) % arr.length) {
             newArr[n] = arr[i];
         }
 
@@ -86,8 +89,11 @@ public class ArrayDeque<T> implements Deque<T>{
             return null;
         }
         nextFirst = (nextFirst + 1) % arr.length;
+        T returnValue = arr[nextFirst];
         size -= 1;
-        return arr[nextFirst];
+
+        checkResizingDown();
+        return returnValue;
     }
 
     @Override
@@ -96,8 +102,18 @@ public class ArrayDeque<T> implements Deque<T>{
             return null;
         }
         nextLast = (nextLast - 1 + arr.length) % arr.length;
+        T returnValue = arr[nextLast];
         size -= 1;
-        return arr[nextLast];
+
+        checkResizingDown();
+
+        return returnValue;
+    }
+
+    private void checkResizingDown() {
+        if(arr.length > 16 && ((double) size / arr.length) < 0.25) {
+            resizing(arr.length / RFACTOR);
+        }
     }
 
     @Override

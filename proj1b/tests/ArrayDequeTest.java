@@ -145,6 +145,27 @@ public class ArrayDequeTest {
                 .that(dq1.size()).isEqualTo(10);
         assertWithMessage("elements should be in order")
                 .that(dq1.toList()).containsExactly(1,2,3,4,5,6,7,8,9,10).inOrder();
+
+        // resizing down
+        dq1.addLast(11);dq1.addLast(12);dq1.addLast(13);dq1.addLast(14);dq1.addLast(15);
+        dq1.addLast(16);dq1.addLast(17);dq1.addLast(18);dq1.addLast(19);dq1.addLast(20);
+        assertWithMessage("after resizing twice, last should be 20")
+                .that(dq1.get(dq1.size() - 1)).isEqualTo(20);
+        assertWithMessage("after resizing twice, 17th should be 18")
+                .that(dq1.get(17)).isEqualTo(18);
+        assertWithMessage("after resizing twice, size should be 20")
+                .that(dq1.size()).isEqualTo(20);
+        dq1.removeLast();dq1.removeLast();dq1.removeLast();dq1.removeLast();dq1.removeLast();
+        dq1.removeLast();dq1.removeLast();dq1.removeLast();dq1.removeLast();dq1.removeLast();
+        dq1.removeLast();
+        dq1.removeLast();
+        dq1.removeLast();
+        dq1.removeLast();
+        dq1.removeLast();
+        dq1.removeLast();
+
+        assertWithMessage("elements should be in order")
+                .that(dq1.toList()).containsExactly(1,2,3,4).inOrder();
     }
 
     @Test
