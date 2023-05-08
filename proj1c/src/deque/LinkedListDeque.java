@@ -1,11 +1,35 @@
 package deque;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class LinkedListDeque<T> implements Deque<T> {
     int size;
     Node<T> sentinel;
+
+    @Override
+    public Iterator<T> iterator() {
+        return new LLDequeIterator();
+    }
+
+    private class LLDequeIterator implements Iterator<T> {
+        Node<T> next;
+
+        public LLDequeIterator() {
+            next = sentinel.next;
+        }
+        @Override
+        public boolean hasNext() {
+            return next == null;
+        }
+        @Override
+        public T next() {
+            T item = next.item;
+            next = next.next;
+            return item;
+        }
+    }
 
     public static class Node<T> {
         Node<T> prev;
