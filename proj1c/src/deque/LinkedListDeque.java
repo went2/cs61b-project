@@ -21,7 +21,7 @@ public class LinkedListDeque<T> implements Deque<T> {
         }
         @Override
         public boolean hasNext() {
-            return next == null;
+            return next != sentinel;
         }
         @Override
         public T next() {
@@ -157,8 +157,24 @@ public class LinkedListDeque<T> implements Deque<T> {
         return getRecursiveHelper(index, p.next);
     }
 
-    public static void main(String[] args) {
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) { return true; }
+        if(o instanceof LinkedListDeque<?> otherDeque) {
+            if(this.size != otherDeque.size) { return false; }
+            for(int i = 0; i < this.size; i++) { // 比较两个双端队列，比较每个索引位置的值
+                if(this.get(i) != otherDeque.get(i)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 
+    @Override
+    public String toString() {
+        return this.toList().toString();
     }
 }
 

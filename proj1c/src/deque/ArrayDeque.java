@@ -137,6 +137,26 @@ public class ArrayDeque<T> implements Deque<T>{
         return new ADequeIterator();
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if(this == object) { return true; }
+        if(object instanceof ArrayDeque<?> otherDeque) { // 类型判断
+            if(this.size != otherDeque.size) { return false; }
+            for(int i = 0; i < this.size; i++) { // 比较两个双端队列，比较每个索引位置的值
+                if(this.get(i) != otherDeque.get(i)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return this.toList().toString();
+    }
+
     private class ADequeIterator implements Iterator<T> {
         int index;
 
