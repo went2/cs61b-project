@@ -2,7 +2,7 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
     private final boolean[] sites; // sites trace openness, true means open
-    private final int N; // numbers of sites in a row
+    private final int N; // number of rows and cols
     private final WeightedQuickUnionUF sitesUnion;
     private final int top; // top node of union
     private final int bottom; // bottom node of union
@@ -14,28 +14,32 @@ public class Percolation {
             throw new java.lang.IllegalArgumentException("N should be greater than 0");
         }
         this.N = N;
-        sites = new boolean[N * N - 1];
+        sites = new boolean[N * N];
         sitesUnion = new WeightedQuickUnionUF(N * N + 2);
-        // 额外两个点，N * N 代表顶部，N * N + 1 代表底部
+        // 额外两个点，用 N * N 表示顶部，N * N + 1 表示底部
         top = N * N;
         bottom = N * N + 1;
-        for(int i = 0; i < N; i++) { // 标记顶层节点
-            sitesUnion.connected(i, top);
-        }
-        for(int j = (N-1) * N;j < N * N; j++) { // 标记底层节点
-            sitesUnion.connected(j, bottom);
-        }
     }
 
     public void open(int row, int col) {
         if(isOpen(row, col)) {
             return;
         }
+
         int index = rcToIndex(row, col);
         sites[index] = true;
         openNumbs += 1;
 
-        // check if there is need to union
+        // if there is need to union
+        // first check top and bottom
+        if(index < N) { // top site
+            sitesUnion.connected(index, top);
+            return;
+        } else if (index >= N * (N - 1)) { // bottom site
+            sitesUnion.connected(index, bottom);
+            return;
+        }
+        // then check others
         int[][] neighbors = getNeighbors(row, col);
         for (int[] neighbor : neighbors) {
             int r = neighbor[0];
@@ -54,7 +58,7 @@ public class Percolation {
     // return gird is connected to top node
     public boolean isFull(int row, int col) {
         int i = rcToIndex(row, col);
-        return sitesUnion.connected(i,top);
+        return isOpen(row, col) && sitesUnion.connected(i,top);
     }
 
     public int numberOfOpenSites() {
@@ -74,7 +78,7 @@ public class Percolation {
     }
 
     private boolean isValidIdx(int index) {
-        return index >= 0 && index <= N - 1;
+        return index >= 0 && index < N;
     }
     // return if a grid is in N*N grids
     private boolean isValidGrid(int row, int col) {
