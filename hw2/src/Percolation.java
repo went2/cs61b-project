@@ -1,3 +1,4 @@
+import edu.princeton.cs.algs4.QuickFindUF;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 import java.lang.IllegalArgumentException;
 import java.lang.IndexOutOfBoundsException;
@@ -9,6 +10,7 @@ public class Percolation {
     private final int N; // number of rows and cols
     private boolean isPercolated = false;
     private final WeightedQuickUnionUF union;
+//    private QuickFindUF union;
     private int openedSites = 0;
 
     public Percolation(int N) {
