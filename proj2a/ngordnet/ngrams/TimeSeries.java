@@ -10,8 +10,8 @@ import java.util.*;
  */
 public class TimeSeries extends TreeMap<Integer, Double> {
 
-    private static int MIN_YEAR = 1400;
-    private static int MAX_YEAR = 2100;
+    private static final int MIN_YEAR = 1400;
+    private static final int MAX_YEAR = 2100;
 
     /**
      * Constructs a new empty TimeSeries.
@@ -26,9 +26,14 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public TimeSeries(TimeSeries ts, int startYear, int endYear) {
         super();
-        this.putAll(ts);
-        MAX_YEAR = endYear;
-        MIN_YEAR = startYear;
+        Set<Map.Entry<Integer, Double>> entries = ts.entrySet();
+        for(Map.Entry<Integer, Double> entry : entries) {
+            int key = entry.getKey();
+            double value = entry.getValue();
+            if(key >= startYear && key <= endYear) {
+                this.put(key, value);
+            }
+        }
     }
 
     /**
