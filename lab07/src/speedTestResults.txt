@@ -1,0 +1,10 @@
+id  random  length  N   BSTMap  ULLMap  TreeMap HashMap
+1   true    5   10000   0.01s   0.31s   0.01s   0.00s
+2   true   5   100000  0.08s   StackOverflow   0.07s   0.04s
+3   true   10  100000  0.07s   StackOverflow   0.08s   0.05s
+4   true   5   1000000 1.31s   StackOverflow   1.20s   0.36s
+5   true   5   10000000    19.12s  StackOverflow   15.83s  6.40s
+6   true   10  10000000    22.29s  StackOverflow   19.07s  7.46s
+7   false   N/A 10000   0.88s   0.78s   0.01s   0.00s
+8   false   N/A 25000   15.73s  3.78s   0.01s   0.01s
+9   false   N/A 50000   StackOverflow   StackOverflow   0.02s   0.02s
