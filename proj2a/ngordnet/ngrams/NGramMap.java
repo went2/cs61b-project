@@ -36,7 +36,7 @@ public class NGramMap {
 
         String currentWord = null;
 
-        while(wordsIn.hasNextLine()) {
+        while(!wordsIn.isEmpty()) {
             String name = wordsIn.readString();
             int year = wordsIn.readInt();
             double times = wordsIn.readDouble();
@@ -53,9 +53,10 @@ public class NGramMap {
         // store word counts
         wordCounts = new TimeSeries();
         In countsIn = new In(countsFilename);
-        while(wordsIn.hasNextLine()) {
+        while(countsIn.hasNextLine()) {
             String line = countsIn.readLine();
             String[] arr = line.split(",");
+//            System.out.println(Arrays.toString(arr));
             int year = Integer.parseInt(arr[0]);
             double counts = Double.parseDouble(arr[1]);
             wordCounts.put(year, counts);
