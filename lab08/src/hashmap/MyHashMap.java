@@ -154,7 +154,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
     private boolean isExceedCapacity() {
         int M = buckets.length;
-        return (double) N / M <= loadFactor;
+        return (double) N / M >= loadFactor;
     }
 
     @Override
