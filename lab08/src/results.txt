@@ -1,0 +1,7 @@
+num isInOrder    length  N   ULLMap  MyHashMap   HashMap
+1   false    5   10000   0.14s    0.01s  0.00s
+2   false    5   1000000 stack overflow  0.58s   0.23s
+3   false    5   100000000   stack overflow 59.94s   31.74s
+4   true   N/A    100000  stack overflow  0.07s   0.04s
+5   true    N/A 1000000  stack overflow  0.30s   0.35s
+6   true    N/A 10000000    stack overflow  3.68s   2.20s
