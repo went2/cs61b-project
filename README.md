@@ -1,6 +1,6 @@
 # 说明
 
-CS 61B Data Structure sp23 课程学习记录仓库：笔记、练习与作业。
+CS61B sp23 课程作业代码仓库。
 
 课程大纲：https://sp23.datastructur.es/
 
